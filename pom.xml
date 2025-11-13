@@ -20,13 +20,12 @@
             <version>5.2.1</version>
         </dependency>
 
-        <!-- Jackson -->
+        <!-- Jackson для JSON -->
         <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.15.2</version>
-</dependency>
-    
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -36,7 +35,8 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>com.example.demo.HuggingFaceTranslateExample</mainClass>
+                    <!-- Теперь указываем главный класс с точкой входа в App -->
+                    <mainClass>com.example.demo.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>
