@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Page Translator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Перевод страницы / текста</h2>
+
+  <label>
+    Текст для перевода:
+    <textarea id="inputText" rows="3"></textarea>
+  </label>
+
+  <label>
+    Лимит слов на странице:
+    <input id="maxWords" type="number" value="100" min="1" max="1000">
+  </label>
+
+  <button id="translateTextBtn">Перевести текст</button>
+  <button id="translatePageBtn">Перевести страницу</button>
+
+  <label>
+    Перевод:
+    <textarea id="translatedText" rows="3" readonly></textarea>
+  </label>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
 
 public class TranslationService {
@@ -30,25 +31,29 @@ public class TranslationService {
     }
 
     public TranslationResponse translate(TranslationRequest request) throws Exception {
-        System.out.println(apiKey);
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost("https://router.huggingface.co/hf-inference/models/" + model);
-            post.setHeader("Authorization", "Bearer " + apiKey);
-            post.setHeader("Content-Type", "application/json");
-            post.setEntity(new StringEntity("{\"inputs\":\"" + request.getText() + "\"}"));
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+        HttpPost post = new HttpPost("https://router.huggingface.co/hf-inference/models/" + model);
+        post.setHeader("Authorization", "Bearer " + apiKey);
+        post.setHeader("Content-Type", "application/json");
 
-            String response = client.execute(post, httpResponse ->
-                    new String(httpResponse.getEntity().getContent().readAllBytes())
-            );
+        // Используем ObjectMapper для корректного JSON
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonBody = mapper.writeValueAsString(Map.of("inputs", request.getText()));
+        post.setEntity(new StringEntity(jsonBody));
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode json = mapper.readTree(response);
+        String response = client.execute(post, httpResponse ->
+                new String(httpResponse.getEntity().getContent().readAllBytes())
+        );
 
-            if (json.isArray() && json.get(0).has("translation_text")) {
-                return new TranslationResponse(json.get(0).get("translation_text").asText());
-            } else {
-                throw new RuntimeException("Unexpected response format: " + json.toPrettyString());
-            }
+        System.out.println("Response from Hugging Face: " + response);
+
+        JsonNode json = mapper.readTree(response);
+        if (json.isArray() && json.get(0).has("translation_text")) {
+            return new TranslationResponse(json.get(0).get("translation_text").asText());
+        } else {
+            throw new RuntimeException("Unexpected response format: " + json.toPrettyString());
         }
-    }
+        }
+    }   
+
 }
